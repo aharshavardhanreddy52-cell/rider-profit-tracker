@@ -89,6 +89,11 @@ if st.button("Save / Update Entry"):
         "Profit": [profit]
     })
 
+    if st.button("🗑️ Delete Entry"):
+        data = data[data["Date"] != str(selected_date)]
+        data.to_csv("data.csv", index=False)
+        st.warning("Entry deleted!")
+
     # Remove old entry
     data = data[data["Date"] != str(selected_date)]
 
@@ -161,3 +166,14 @@ if not data.empty:
     best_day = data.loc[data["Profit"].idxmax()]
     st.write(f"Best Day: {best_day['Date']}")
     st.write(f"Profit: ₹{best_day['Profit']}")
+
+st.header("📥 Download Report")
+
+csv = data.to_csv(index=False).encode('utf-8')
+
+st.download_button(
+    label="Download CSV",
+    data=csv,
+    file_name='earnings_report.csv',
+    mime='text/csv',
+)
